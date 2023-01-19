@@ -1,11 +1,12 @@
 import React from 'react'
+import Dashboard from './Components/Dashboard'
 
-function App() {
+const App: React.FC = () => {
 
   return (
-    <div>
-      hello
-    </div>
+    <>
+      <Dashboard/>
+    </>
   )
 }
 
