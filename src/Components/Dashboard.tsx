@@ -1,4 +1,4 @@
-import React, { useState, useRef, ReactElement, useContext, ChangeEvent, DragEvent } from 'react'
+import React, { useState, useRef, useEffect, ReactElement, useContext, ChangeEvent, DragEvent } from 'react'
 import { v4 as uuidv4 } from "uuid"
 import { PeerConnectionContext } from '../Contexts/PeerConnection'
 import "./Dashboard.scss"
@@ -6,14 +6,30 @@ import "./Dashboard.scss"
 export default function Dashboard(): ReactElement {
 
     const [file, setFile] = useState<File | null>(null)
+    const [clientCode, setClientCode] = useState<string | null>("")
 
     const draggableAreaRef = useRef(null) as React.MutableRefObject<HTMLDivElement | null>
 
     // Get peer connection from context
     const pc = useContext(PeerConnectionContext) as RTCPeerConnection
 
+    useEffect(() => {
 
-    const getClientCode = () => uuidv4()
+        const sessionStorageClientCode = localStorage.getItem("clientCode") as string | null
+
+        if (!sessionStorageClientCode) {
+
+            const newClientCode = uuidv4()
+
+            setClientCode(newClientCode)
+
+            localStorage.setItem("clientCode", newClientCode)
+        }
+
+        else setClientCode(sessionStorageClientCode)
+
+        
+    }, [])
 
     const handleFile = (e: ChangeEvent): void => {
 
@@ -57,7 +73,11 @@ export default function Dashboard(): ReactElement {
 
             <p className='dashboard__your-code-paragraph'>Your Code:</p>
 
-            <span className='dashboard__client-code'>{getClientCode()}</span>
+            <span className='dashboard__client-code'>{clientCode}</span>
+
+            <label className='dashboard__sender-id-label' htmlFor='receiver-id'>Send to:</label>
+
+            <input className='dashboard__receiver-input' id='receiver-id' type="text" placeholder='Enter receiver id...' />
 
             <div
                 ref={draggableAreaRef}
@@ -67,7 +87,7 @@ export default function Dashboard(): ReactElement {
                 onDrop={e => handleOnDrop(e)}
             >
 
-                DRAG FILE HERE 
+                DRAG FILE HERE
 
                 <p className='dashboard__or-paragraph'>OR</p>
 
