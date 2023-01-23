@@ -1,0 +1,15 @@
+.files-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    align-self: flex-end;
+    position: relative;
+    background-color: #e6e6e6;
+    width: 100%;
+    overflow: auto;
+
+    &__file {
+        padding: 5px;
+    }
+}

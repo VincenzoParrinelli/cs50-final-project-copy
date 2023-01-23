@@ -1,17 +1,21 @@
 import React, { useState, useRef, useEffect, ReactElement, useContext, ChangeEvent, DragEvent } from 'react'
 import { v4 as uuidv4 } from "uuid"
-import { PeerConnectionContext } from '../Contexts/PeerConnection'
+import { PeerConnectionContext } from '../../Contexts/PeerConnection'
+import { FilesContext } from '../../Contexts/FilesContext'
+import { FilesInterface } from "../../Interfaces/FilesInterface"
 import "./Dashboard.scss"
 
 export default function Dashboard(): ReactElement {
 
-    const [file, setFile] = useState<File | null>(null)
-    const [clientCode, setClientCode] = useState<string | null>("")
+    const [clientCode, setClientCode] = useState<string>("")
+    const { setFiles }: FilesInterface = useContext(FilesContext)
 
     const draggableAreaRef = useRef(null) as React.MutableRefObject<HTMLDivElement | null>
 
     // Get peer connection from context
     const pc = useContext(PeerConnectionContext) as RTCPeerConnection
+
+
 
     useEffect(() => {
 
@@ -28,14 +32,14 @@ export default function Dashboard(): ReactElement {
 
         else setClientCode(sessionStorageClientCode)
 
-        
+
     }, [])
 
     const handleFile = (e: ChangeEvent): void => {
 
         const target = e.target as HTMLInputElement
 
-        setFile(target.files![0])
+        setFiles(prevFiles => [...prevFiles, ...target.files!])
 
     }
 
@@ -55,11 +59,11 @@ export default function Dashboard(): ReactElement {
     const handleOnDrop = (e: DragEvent): void => {
         e.preventDefault()
 
-        if (!e.dataTransfer.items) return
+        if (!e.dataTransfer.files) return
 
-        [...e.dataTransfer.items].forEach(item => {
+        [...e.dataTransfer.files].forEach(item => {
 
-            setFile(item.getAsFile())
+            setFiles(prevFiles => [...prevFiles, item])
 
         })
 
@@ -67,9 +71,11 @@ export default function Dashboard(): ReactElement {
     }
 
     return (
+
+
         <div className='dashboard'>
 
-            <h1 className='dashboard__upload-file-heading'>UPLOAD FILE</h1>
+            <h1 className='dashboard__upload-file-heading'>UPLOAD FILES</h1>
 
             <p className='dashboard__your-code-paragraph'>Your Code:</p>
 
@@ -87,7 +93,7 @@ export default function Dashboard(): ReactElement {
                 onDrop={e => handleOnDrop(e)}
             >
 
-                DRAG FILE HERE
+                <span className='dashboard__drag-file-span'>DRAG FILE HERE</span>
 
                 <p className='dashboard__or-paragraph'>OR</p>
 
@@ -96,6 +102,7 @@ export default function Dashboard(): ReactElement {
                 <input
                     id='file'
                     type="file"
+                    multiple
                     className='dashboard__file-input'
                     onChange={e => handleFile(e)}
                 />
@@ -105,5 +112,6 @@ export default function Dashboard(): ReactElement {
             <button className='dashboard__send-btn'>SEND</button>
 
         </div>
+
     )
 } 

@@ -1,7 +1,6 @@
 body {
-    width: 370px;
-    height: 520px;
     overflow: hidden;
+    margin: 0;
 }
 
 .dashboard {
@@ -10,7 +9,7 @@ body {
     align-items: center;
     justify-content: center;
     position: absolute;
-    top: 47%;
+    top: 44%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
@@ -19,6 +18,7 @@ body {
     border-radius: 12px;
     color: #3d74f5;
     font-family: "RozanovaUltraBold";
+    font-size: 13px;
     letter-spacing: 0.2em;
     white-space: nowrap;
 
@@ -65,9 +65,9 @@ body {
         color: black;
         opacity: 0.4;
         border-radius: 12px;
-        width: 300px;
+        width: 250px;
         height: 200px;
-        padding: 55px 0;
+        padding: 20px 0;
         cursor: pointer;
 
         // Dashed border 
@@ -81,6 +81,10 @@ body {
         &--drag-over {
             opacity: 1;
         }
+    }
+
+    &__drag-file-span, &__or-paragrap, &__browse-paragraph {
+        font-size: 10px;
     }
 
     &__or-paragraph {

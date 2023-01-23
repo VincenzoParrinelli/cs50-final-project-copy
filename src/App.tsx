@@ -1,12 +1,22 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Dashboard from './Components/Dashboard'
+import FilesList from './Components/FilesList'
+import { FilesContext } from '../Contexts/FilesContext'
+import "./App.scss"
 
 const App: React.FC = () => {
 
+  const [files, setFiles] = useState<File[]>([])
+
   return (
-    <>
-      <Dashboard />
-    </>
+    <div className='app'>
+
+      <FilesContext.Provider value={{ files, setFiles }}>
+        <Dashboard />
+        <FilesList />
+      </FilesContext.Provider>
+
+    </div>
   )
 }
 
