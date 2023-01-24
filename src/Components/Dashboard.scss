@@ -1,6 +1,21 @@
 body {
     overflow: hidden;
     margin: 0;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+        background-color: #F5F5F5;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background-color: rgba(128, 128, 128, 0.518);
+    }
+
+    &::-webkit-scrollbar-track {
+        border-radius: 10px;
+        background-color: rgba(128, 128, 128, 0.3); 
+    }
 }
 
 .dashboard {
@@ -8,8 +23,8 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: absolute;
-    top: 44%;
+    position: relative;
+    top: 23%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
@@ -133,3 +148,4 @@ body {
     font-family: "RozanovaRegular";
     src: url("../Assets/Fonts/RozanovaHUMRegular.otf");
 }
+

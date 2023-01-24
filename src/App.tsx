@@ -13,7 +13,9 @@ const App: React.FC = () => {
 
       <FilesContext.Provider value={{ files, setFiles }}>
         <Dashboard />
-        <FilesList />
+
+        {files.length > 0 && <FilesList />}
+
       </FilesContext.Provider>
 
     </div>
