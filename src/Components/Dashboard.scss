@@ -52,6 +52,21 @@ body {
         margin-bottom: 25px;
     }
 
+    &__new-code-btn {
+        border: none;
+        background-color: #3d74f5;
+        color: white;
+        padding: 10px 20px 10px 20px;
+        margin-bottom: 35px;
+        border-radius: 8px;
+        transition: all 0.2s;
+        cursor: pointer;
+ 
+        &:hover {
+            background-color: #004cff;
+        }
+    }
+
     &__sender-id-label {
         color: black;
     }

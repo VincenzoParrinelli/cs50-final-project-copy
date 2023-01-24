@@ -44,14 +44,15 @@
         justify-content: space-between;
         flex-direction: column;
         text-align: left;
-       
     }
 
     &__file-name {
+        margin-top: 20px;
         font-family: "RozanovaUltraBold";
     }
 
     &__file-size {
+        margin: 0;
         opacity: 0.7;
     }
 }

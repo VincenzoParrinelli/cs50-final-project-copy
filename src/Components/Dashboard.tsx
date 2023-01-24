@@ -81,6 +81,8 @@ export default function Dashboard(): ReactElement {
 
             <span className='dashboard__client-code'>{clientCode}</span>
 
+            <button className='dashboard__new-code-btn' onClick={() => setClientCode(uuidv4())}>New Code</button>
+
             <label className='dashboard__sender-id-label' htmlFor='receiver-id'>Send to:</label>
 
             <input className='dashboard__receiver-input' id='receiver-id' type="text" placeholder='Enter receiver id...' />
