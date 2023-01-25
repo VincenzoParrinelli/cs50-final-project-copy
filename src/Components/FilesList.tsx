@@ -17,7 +17,6 @@ export default function FilesList(): ReactElement {
 
                 {files.map(file => {
 
-
                     return (
                         <div className='files-list__file' key={uuidv4()}>
 
