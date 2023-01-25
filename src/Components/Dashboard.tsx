@@ -16,6 +16,14 @@ export default function Dashboard(): ReactElement {
     const pc = useContext(PeerConnectionContext) as RTCPeerConnection
 
 
+    const getNewCode = (): void => {
+
+        const newCode = uuidv4()
+        
+        localStorage.setItem("clientCode", newCode)
+
+        setClientCode(newCode)
+    }
 
     useEffect(() => {
 
@@ -81,7 +89,7 @@ export default function Dashboard(): ReactElement {
 
             <span className='dashboard__client-code'>{clientCode}</span>
 
-            <button className='dashboard__new-code-btn' onClick={() => setClientCode(uuidv4())}>New Code</button>
+            <button className='dashboard__new-code-btn' onClick={() => getNewCode()}>New Code</button>
 
             <label className='dashboard__sender-id-label' htmlFor='receiver-id'>Send to:</label>
 
