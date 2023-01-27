@@ -9,6 +9,8 @@ export default function FilesList(): ReactElement {
 
     const { files } = useContext(FilesContext) as FilesInterface
 
+    console.log(files)
+
     return (
 
         <div className='files-list'>

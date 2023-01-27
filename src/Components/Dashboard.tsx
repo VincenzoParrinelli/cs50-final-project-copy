@@ -3,54 +3,77 @@ import { v4 as uuidv4 } from "uuid"
 import { PeerConnectionContext } from '../../Contexts/PeerConnection'
 import { FilesContext } from '../../Contexts/FilesContext'
 import { FilesInterface } from "../../Interfaces/FilesInterface"
+import localforage from 'localforage'
 import "./Dashboard.scss"
 
 export default function Dashboard(): ReactElement {
 
     const [clientCode, setClientCode] = useState<string>("")
-    const { setFiles }: FilesInterface = useContext(FilesContext)
+    const { files, setFiles }: FilesInterface = useContext(FilesContext)
 
     const draggableAreaRef = useRef(null) as React.MutableRefObject<HTMLDivElement | null>
 
     // Get peer connection from context
-    const pc = useContext(PeerConnectionContext) as RTCPeerConnection
+    const pc = useContext(PeerConnectionContext)
 
-
+    // Genereate new code for this client
     const getNewCode = (): void => {
 
         const newCode = uuidv4()
-        
+
         localStorage.setItem("clientCode", newCode)
 
         setClientCode(newCode)
     }
 
+    // Get files utils function that returns files from indexedDb if any else void
+    const getFiles = async (): Promise<File[] | void> => {
+
+        try {
+
+            const files = await localforage.getItem("files") as File[]
+
+            if (files) return files
+
+        } catch (err) {
+
+            console.error(err)
+        }
+    }
+
+    // On component mount fetch client code from local storage else if first time using the extension generate a new code
+    // Also fetch files saved in indexedDb in order to render a file history
     useEffect(() => {
 
-        const sessionStorageClientCode = localStorage.getItem("clientCode") as string | null
+        const localStorageClientCode = localStorage.getItem("clientCode") as string | null
 
-        if (!sessionStorageClientCode) {
+        if (!localStorageClientCode) getNewCode()
 
-            const newClientCode = uuidv4()
+        else setClientCode(localStorageClientCode)
 
-            setClientCode(newClientCode)
-
-            localStorage.setItem("clientCode", newClientCode)
-        }
-
-        else setClientCode(sessionStorageClientCode)
+        getFiles().then(files => setFiles(files as File[]))
 
 
     }, [])
 
+    // Get new files 
     const handleFile = (e: ChangeEvent): void => {
 
         const target = e.target as HTMLInputElement
 
-        setFiles(prevFiles => [...prevFiles, ...target.files!])
+        const filesFromTarget = [...target.files!]
+
+        getFiles().then(async files => {
+
+            await localforage.setItem("files", files ? [...files, ...filesFromTarget] : filesFromTarget)
+
+            setFiles(files ? [...files, ...filesFromTarget] : filesFromTarget)
+
+        })
 
     }
 
+    // When user hoveres on drag and drop area change style
     const handleDragOver = (e: DragEvent): void => {
         e.preventDefault()
 
@@ -58,12 +81,14 @@ export default function Dashboard(): ReactElement {
 
     }
 
+    // When user leaves cursor from drag and drop remove style
     const handleDragLeave = (e: DragEvent): void => {
         e.preventDefault()
 
         draggableAreaRef.current?.classList.remove("dashboard__file-dragger--drag-over")
     }
 
+    // Handle drag and dropped files
     const handleOnDrop = (e: DragEvent): void => {
         e.preventDefault()
 

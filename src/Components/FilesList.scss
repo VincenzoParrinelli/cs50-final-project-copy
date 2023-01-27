@@ -3,13 +3,13 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    position: relative;
+    position: absolute;
     background-color: #e6e6e6;
     width: 100%;
-    height: 30%;
+    height: 20%;
     padding-top: 15px;
     padding-bottom: 15px;
-    top: 120px;
+    bottom: -17%;
 
     &__container {
         display: flex;
@@ -38,7 +38,7 @@
 
     &__file {
         display: flex;
-        width: 30%;
+        width: 50%;
         padding: 5px;
         justify-content: space-between;
         flex-direction: column;
