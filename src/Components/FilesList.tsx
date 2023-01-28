@@ -1,15 +1,14 @@
-import React, { ReactElement, useContext, useEffect } from 'react'
+import React, { ReactElement, useContext } from 'react'
 import { FilesContext } from '../../Contexts/FilesContext'
 import { FilesInterface } from "../../Interfaces/FilesInterface"
 import { v4 as uuidv4 } from 'uuid'
+import { ReactComponent as DeleteIcon } from "../Assets/Images/cross-remove-sign-svgrepo-com.svg"
 import prettyBytes from 'pretty-bytes'
 import "./FilesList.scss"
 
 export default function FilesList(): ReactElement {
 
-    const { files } = useContext(FilesContext) as FilesInterface
-
-    console.log(files)
+    const { files, setFiles } = useContext(FilesContext) as FilesInterface
 
     return (
 
@@ -20,13 +19,21 @@ export default function FilesList(): ReactElement {
                 {files.map(file => {
 
                     return (
+
                         <div className='files-list__file' key={uuidv4()}>
 
-                            <span className='files-list__file-name'>{file.name}</span>
+                            <div className='files-list__metadata-container'>
 
-                            <p className='files-list__file-size'>{prettyBytes(file.size).toUpperCase()}</p>
+                                <div className='files-list__file-name'>{file.name}</div>
+
+                                <p className='files-list__file-size'>{prettyBytes(file.size).toUpperCase()}</p>
+
+                            </div>
+
+                            <DeleteIcon className='files-list__delete-icon' />
 
                         </div>
+
                     )
 
                 })}

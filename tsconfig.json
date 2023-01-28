@@ -14,8 +14,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
   },
-  "include": ["src", "Contexts", "./svg.d.ts"],
+  "include": ["src", "Contexts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
