@@ -3,6 +3,8 @@ import { FilesContext } from '../../Contexts/FilesContext'
 import { FilesInterface } from "../../Interfaces/FilesInterface"
 import { v4 as uuidv4 } from 'uuid'
 import { ReactComponent as DeleteIcon } from "../Assets/Images/cross-remove-sign-svgrepo-com.svg"
+import { getFiles } from '../../Utils/getFiles'
+import localforage from 'localforage'
 import prettyBytes from 'pretty-bytes'
 import "./FilesList.scss"
 
@@ -10,13 +12,28 @@ export default function FilesList(): ReactElement {
 
     const { files, setFiles } = useContext(FilesContext) as FilesInterface
 
+    // Delete file on click
+    const handleDeleteFile = (fileIndex: number): void => {
+
+        getFiles().then(async files => {
+
+            // Remove file from indexedDb files array
+            const updatedFiles = files!.filter((_file, i) => fileIndex !== i) as File[]
+
+            // And set it
+            await localforage.setItem("files", updatedFiles).then(() => setFiles(updatedFiles))
+
+        })
+
+    }
+
     return (
 
         <div className='files-list'>
 
             <div className='files-list__container'>
 
-                {files.map((file, i) => {
+                {files.map((file, fileIndex) => {
 
                     return (
 
@@ -30,7 +47,7 @@ export default function FilesList(): ReactElement {
 
                             </div>
 
-                            <DeleteIcon className='files-list__delete-icon' />
+                            <DeleteIcon className='files-list__delete-icon' onClick={() => handleDeleteFile(fileIndex)} />
 
                         </div>
 

@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid"
 import { PeerConnectionContext } from '../../Contexts/PeerConnection'
 import { FilesContext } from '../../Contexts/FilesContext'
 import { FilesInterface } from "../../Interfaces/FilesInterface"
+import { getFiles } from "../../Utils/getFiles"
 import localforage from 'localforage'
 import "./Dashboard.scss"
 
@@ -24,21 +25,6 @@ export default function Dashboard(): ReactElement {
         localStorage.setItem("clientCode", newCode)
 
         setClientCode(newCode)
-    }
-
-    // Get files utils function that returns files from indexedDb if any else void
-    const getFiles = async (): Promise<File[] | void> => {
-
-        try {
-
-            const files = await localforage.getItem("files") as File[]
-
-            if (files) return files
-
-        } catch (err) {
-
-            console.error(err)
-        }
     }
 
     // On component mount fetch client code from local storage else if first time using the extension generate a new code
@@ -95,9 +81,9 @@ export default function Dashboard(): ReactElement {
         e.preventDefault()
 
         if (!e.dataTransfer.files.length) return
-        
+
         const fileArr = [...e.dataTransfer.files] as File[]
-       
+
         getFiles().then(files => {
 
             fileArr.forEach(async item => {
