@@ -16,7 +16,7 @@ export default function FilesList(): ReactElement {
 
             <div className='files-list__container'>
 
-                {files.map(file => {
+                {files.map((file, i) => {
 
                     return (
 

@@ -65,9 +65,11 @@ export default function Dashboard(): ReactElement {
 
         getFiles().then(async files => {
 
-            await localforage.setItem("files", files ? [...files, ...filesFromTarget] : filesFromTarget)
+            await localforage.setItem("files", files ? [...files, ...filesFromTarget] : filesFromTarget).then(() => {
 
-            setFiles(files ? [...files, ...filesFromTarget] : filesFromTarget)
+                setFiles(files ? [...files, ...filesFromTarget] : filesFromTarget)
+            })
+
 
         })
 
@@ -92,11 +94,21 @@ export default function Dashboard(): ReactElement {
     const handleOnDrop = (e: DragEvent): void => {
         e.preventDefault()
 
-        if (!e.dataTransfer.files) return
+        if (!e.dataTransfer.files.length) return
+        
+        const fileArr = [...e.dataTransfer.files] as File[]
+       
+        getFiles().then(files => {
 
-        [...e.dataTransfer.files].forEach(item => {
+            fileArr.forEach(async item => {
 
-            setFiles(prevFiles => [...prevFiles, item])
+                await localforage.setItem("files", files ? [...files, item] : item).then(() => {
+
+                    setFiles(files ? [...files, item] : [item])
+                })
+
+
+            })
 
         })
 
