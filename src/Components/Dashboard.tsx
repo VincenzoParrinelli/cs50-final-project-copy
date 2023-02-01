@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from "uuid"
 import { PeerConnectionContext } from '../../Contexts/PeerConnection'
 import { FilesContext } from '../../Contexts/FilesContext'
 import { FilesInterface } from "../../Interfaces/FilesInterface"
-import { getFiles } from "../../Utils/getFiles"
 import localforage from 'localforage'
 import "./Dashboard.scss"
 
@@ -27,6 +26,23 @@ export default function Dashboard(): ReactElement {
         setClientCode(newCode)
     }
 
+    // Get files utils function that returns files from indexedDb if any else void
+    const getFiles = async (): Promise<File[] | void> => {
+
+        try {
+
+            const files = await localforage.getItem("files") as File[]
+
+            if (files) return files
+
+
+        } catch (err) {
+
+            console.error(err)
+        }
+    }
+
+
     // On component mount fetch client code from local storage else if first time using the extension generate a new code
     // Also fetch files saved in indexedDb in order to render a file history
     useEffect(() => {
@@ -43,21 +59,17 @@ export default function Dashboard(): ReactElement {
     }, [])
 
     // Get new files 
-    const handleFile = (e: ChangeEvent): void => {
+    const handleFile = async (e: ChangeEvent): Promise<void> => {
 
         const target = e.target as HTMLInputElement
 
-        const filesFromTarget = [...target.files!]
+        const filesFromTarget = target.files as FileList
 
-        getFiles().then(async files => {
+        await localforage.setItem("files", files.length ? [...files, ...filesFromTarget] : [...filesFromTarget]).then(() => {
 
-            await localforage.setItem("files", files ? [...files, ...filesFromTarget] : filesFromTarget).then(() => {
-
-                setFiles(files ? [...files, ...filesFromTarget] : filesFromTarget)
-            })
-
-
+            setFiles(files.length ? [...files, ...filesFromTarget] : [...filesFromTarget])
         })
+
 
     }
 
@@ -76,27 +88,19 @@ export default function Dashboard(): ReactElement {
         draggableAreaRef.current?.classList.remove("dashboard__file-dragger--drag-over")
     }
 
-    // Handle drag and dropped files
-    const handleOnDrop = (e: DragEvent): void => {
+    // Handle drag and dropped files 
+    const handleOnDrop = async (e: DragEvent): Promise<void> => {
         e.preventDefault()
 
-        if (!e.dataTransfer.files.length) return
+        const newFilesArr = e.dataTransfer.files as FileList
 
-        const fileArr = [...e.dataTransfer.files] as File[]
+        if (!newFilesArr.length) return
 
-        getFiles().then(files => {
+        await localforage.setItem("files", files.length ? [...files, ...newFilesArr] : [...newFilesArr]).then(() => {
 
-            fileArr.forEach(async item => {
-
-                await localforage.setItem("files", files ? [...files, item] : item).then(() => {
-
-                    setFiles(files ? [...files, item] : [item])
-                })
-
-
-            })
-
+            setFiles(files.length ? [...files, ...newFilesArr] : [...newFilesArr])
         })
+
 
         draggableAreaRef.current?.classList.remove("dashboard__file-dragger--drag-over")
     }
